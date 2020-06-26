@@ -16,7 +16,7 @@ public class Job {
    private boolean status;
    private String birthday;   // for real time version
     private int  birthStamp; //for button iterative version
-
+   private double score=0;
 
 
     public Job(String name, int priority, int time) {
@@ -25,7 +25,7 @@ public class Job {
         this.time = time;
         this.status=false;
         this.birthday=getMyBirthday();
-        this.birthStamp= Base.programTime;
+        this.birthStamp= Base.getProgramTime();
     }
 
    private String getMyBirthday(){
@@ -56,12 +56,16 @@ public class Job {
     public void setBirthStamp(int birthStamp) {
         this.birthStamp = birthStamp;
     }
-
+    @Deprecated
    public int getMyAge(){
        int birthD=  Integer.parseInt(this.birthday);
        int currentTime=Integer.parseInt(getMyBirthday());
         return currentTime-birthD;
    }
+
+    public int getMyAgeStamp(){
+        return Base.getProgramTime()-birthStamp;
+    }
 
     public String getName() {
         return name;
@@ -128,5 +132,11 @@ public class Job {
     }
 
 
+    public double getScore() {
+        return score;
+    }
 
+    public void setScore(double score) {
+        this.score = score;
+    }
 }
