@@ -7,6 +7,7 @@ import com.bloodbird.lifescheduler.MainActivity;
 import com.bloodbird.lifescheduler.Models.Job;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -76,7 +77,7 @@ public  class Base {
 
     private  void calculateScore(Job job) {
         Log.d("logd",job.getPriority()+"*"+scoreNormalizeEquation(job.getBirthStamp())+":+"+job.getPriority() * scoreNormalizeEquation(job.getBirthStamp()));
-        job.setScore(job.getPriority() * scoreNormalizeEquation(job.getBirthStamp()));
+        job.setScore(job.getPriority()*job.getPriority() * scoreNormalizeEquation(job.getBirthStamp()));
     }
 
     private  void firstcalculate(Job job) {
@@ -95,7 +96,7 @@ public  class Base {
 
     private  double scoreNormalizeEquation(int age) {
         Log.d("logd",age+"agea"+(23/ (1 + (Math.pow(Math.E, (-age + 5))))) + 1+"\n");
-        return (23 / (1 + (Math.pow(Math.E, (-age + 5))))) + 1;
+        return (5 / (1 + (Math.pow(Math.E, (-age + 5))))) + 1;
     }
 
     /**
@@ -120,17 +121,27 @@ public  class Base {
      */
     private  List<Job> splitJobs(List<Job> jobs) {
         int localtime=1;
+        int localtime2=1;
+        int[] waitqueu=new int[jobs.size()];
+        Arrays.fill(waitqueu,0);
         List<Job> segmentedList = new ArrayList<>();
 
         for (int i = 0; i < jobs.size(); i++) {
             for (int j = 0; j < jobs.get(i).getTime(); j++) {
-                 Log.d("logd",j+"");
-                Job temp = new Job(jobs.get(i).getName()+"-"+(j+1), jobs.get(i).getPriority(), 1,localtime);
+
+                Job temp = new Job(jobs.get(i).getName()+"-"+(j+1), jobs.get(i).getPriority(), 1,waitqueu[i]);
                 temp.setScore(jobs.get(i).getScore());
                 segmentedList.add(temp);
+                waitqueu[i]++;
+                for(int z=0;z<jobs.size();z++) {
+                    if (z != i) {
+                        waitqueu[z]++;
 
+                    }
+                }
             }
-           // localtime+=jobs.get(i).getTime();
+
+
 
           //  jobs.get(i).setTime(jobs.get(i).getTime() - 1);
         }
