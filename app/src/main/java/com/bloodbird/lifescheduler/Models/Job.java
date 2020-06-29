@@ -25,7 +25,7 @@ public class Job {
         this.time = time;
         this.status=false;
         this.birthday=getMyBirthday();
-        this.birthStamp= Base.getProgramTime();
+        this.birthStamp= Base.getInstance().getProgramTime();
     }
 
    private String getMyBirthday(){
@@ -64,7 +64,7 @@ public class Job {
    }
 
     public int getMyAgeStamp(){
-        return Base.getProgramTime()-birthStamp;
+        return Base.getInstance().getProgramTime()-birthStamp;
     }
 
     public String getName() {
@@ -138,5 +138,18 @@ public class Job {
 
     public void setScore(double score) {
         this.score = score;
+    }
+
+    @Override
+    public String toString() {
+        return "Job{" +
+                "name='" + name + '\'' +
+                ", priority=" + priority +
+                ", time=" + time +
+                ", status=" + status +
+                ", birthday='" + birthday + '\'' +
+                ", birthStamp=" + birthStamp +
+                ", score=" + score +
+                '}';
     }
 }
