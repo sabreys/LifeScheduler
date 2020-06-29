@@ -16,7 +16,7 @@ public class Job {
    private boolean status;
    private String birthday;   // for real time version
     private int  birthStamp; //for button iterative version
-   private double score=0;
+   private double score=1;
 
 
     public Job(String name, int priority, int time) {
@@ -28,6 +28,14 @@ public class Job {
         this.birthStamp= Base.getInstance().getProgramTime();
     }
 
+    public Job(String name, int priority, int time,int stamp) {
+        this.name = name;
+        this.priority = priority;
+        this.time = time;
+        this.status=false;
+        this.birthday=getMyBirthday();
+        this.birthStamp= stamp;
+    }
    private String getMyBirthday(){
        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHH");
        Date date = new Date();

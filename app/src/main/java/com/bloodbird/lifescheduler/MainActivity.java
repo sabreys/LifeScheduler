@@ -23,6 +23,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
    Button addbutton;
+   Button clock;
 
     ArrayList<String> list;
     Base base;
@@ -38,10 +39,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         base = Base.getInstance();
-        base.baseBuild();
+        base.baseBuild(this);
 
-       
-
+        clock=findViewById(R.id.clock);
+        clock.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                base.clockPulse();
+            }
+        });
         addbutton = findViewById(R.id.addbutton);
         addbutton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,14 +62,14 @@ public class MainActivity extends AppCompatActivity {
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
-        recyclerView.setHasFixedSize(true);
+
 
         // use a linear layout manager
         layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new ListAdapter(base.jobs);
+        mAdapter = new ListAdapter(base.listedJobs);
         recyclerView.setAdapter(mAdapter);
 
       mAdapter.notifyDataSetChanged();
@@ -74,6 +80,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mAdapter.notifyDataSetChanged();
+         base.printList();
+    }
 
+    public  void notifyi(){
+        mAdapter.notifyDataSetChanged();
     }
 }

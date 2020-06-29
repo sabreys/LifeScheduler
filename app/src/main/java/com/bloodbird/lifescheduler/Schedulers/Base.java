@@ -1,7 +1,9 @@
 package com.bloodbird.lifescheduler.Schedulers;
 
+import android.content.Context;
 import android.util.Log;
 
+import com.bloodbird.lifescheduler.MainActivity;
 import com.bloodbird.lifescheduler.Models.Job;
 
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ public  class Base {
     public  List<Job> listedJobs;
     private int programTime = 0;
 
+    MainActivity context;
+
     private static Base single_instance = null;
 
     private Base()
@@ -31,37 +35,38 @@ public  class Base {
         return single_instance;
     }
 
-    public  void baseBuild() {
+    public  void baseBuild(MainActivity context) {
         jobs = new ArrayList<>();
         listedJobs = new ArrayList<>();
-
+        this.context=context;
     }
 
     // there will be a thread that count every hour in real time version.
     public  void clockPulse() {
 
-
         programTime++;
-
-     /*   if (listedJobs.size() > 1)
-            listedJobs.remove(0);
-*/
-
-        listedJobs = splitJobs(schedule(jobs));
-
-        printList();
-
-
+       listedJobs.clear();
+       listedJobs.addAll(schedule(jobs)) ;
+         context.notifyi();
     }
 
     private  List<Job> schedule(List<Job> jobs) {
         List<Job> sessionList = new ArrayList<>(jobs);
 
-        for (int i = 0; i < sessionList.size(); i++) {
-            calculateScore(sessionList.get(i));
+        for (int i = 0; i <  sessionList.size(); i++) {
+            firstcalculate( sessionList.get(i));
         }
         sortJobs(sessionList);
-        return sessionList;
+
+        List<Job> splitedList = splitJobs(sessionList);
+        Log.d("logd",splitedList.size()+"---------");
+
+        for (int i = 0; i < splitedList.size(); i++) {
+
+            calculateScore(splitedList.get(i));
+        }
+        sortJobs(splitedList);
+        return splitedList;
     }
 
     public  int getProgramTime() {
@@ -70,8 +75,15 @@ public  class Base {
 
 
     private  void calculateScore(Job job) {
-        job.setScore(job.getPriority() * scoreNormalizeEquation(job.getMyAgeStamp()));
+        Log.d("logd",job.getPriority()+"*"+scoreNormalizeEquation(job.getBirthStamp())+":+"+job.getPriority() * scoreNormalizeEquation(job.getBirthStamp()));
+        job.setScore(job.getPriority() * scoreNormalizeEquation(job.getBirthStamp()));
     }
+
+    private  void firstcalculate(Job job) {
+        job.setScore(job.getPriority());
+    }
+
+
 
     /**
      * A feature written to increase the priority of aging jobs.
@@ -80,8 +92,10 @@ public  class Base {
      * @param age how much time passed from creating the task
      * @return normalized ageing multiplier
      */
+
     private  double scoreNormalizeEquation(int age) {
-        return (4 / (1 + (Math.pow(Math.E, (-age + 4))))) + 1;
+        Log.d("logd",age+"agea"+(23/ (1 + (Math.pow(Math.E, (-age + 5))))) + 1+"\n");
+        return (23 / (1 + (Math.pow(Math.E, (-age + 5))))) + 1;
     }
 
     /**
@@ -105,17 +119,20 @@ public  class Base {
      * @return splitted job list
      */
     private  List<Job> splitJobs(List<Job> jobs) {
-
+        int localtime=1;
         List<Job> segmentedList = new ArrayList<>();
 
         for (int i = 0; i < jobs.size(); i++) {
             for (int j = 0; j < jobs.get(i).getTime(); j++) {
-
-                Job temp = new Job(jobs.get(i).getName()+"-"+(j+1), jobs.get(i).getPriority(), 1);
+                 Log.d("logd",j+"");
+                Job temp = new Job(jobs.get(i).getName()+"-"+(j+1), jobs.get(i).getPriority(), 1,localtime);
                 temp.setScore(jobs.get(i).getScore());
                 segmentedList.add(temp);
-                jobs.get(i).setTime(jobs.get(i).getTime() - 1);
+
             }
+           // localtime+=jobs.get(i).getTime();
+
+          //  jobs.get(i).setTime(jobs.get(i).getTime() - 1);
         }
         return segmentedList;
 
