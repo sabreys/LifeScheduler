@@ -1,6 +1,7 @@
 package com.bloodbird.lifescheduler.Views;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -16,10 +17,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> 
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
-        public TextView textView;
-        public MyViewHolder(TextView v) {
-            super(v);
-            textView = v;
+        public TextView priority;
+        public TextView name;
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            name = itemView.findViewById(R.id.name);
+            priority=itemView.findViewById(R.id.priority);
+
         }
     }
 
@@ -33,20 +37,18 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.MyViewHolder> 
     public ListAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
                                                      int viewType) {
         // create a new view
-        TextView v = (TextView) LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.my_text_view, parent, false);
+        View v =  LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.list_item, parent, false);
 
-        MyViewHolder vh = new MyViewHolder(v);
-        return vh;
+        return new MyViewHolder(v);
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        // - get element from your dataset at this position
-        // - replace the contents of the view with that element
-        holder.textView.setText(mDataset.get(position).getName());
 
+        holder.name.setText(mDataset.get(position).getName());
+        holder.priority.setText(mDataset.get(position).getPriority()+" ");
     }
 
     // Return the size of your dataset (invoked by the layout manager)

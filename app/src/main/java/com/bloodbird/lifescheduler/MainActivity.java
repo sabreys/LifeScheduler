@@ -13,7 +13,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import com.bloodbird.lifescheduler.Models.Job;
 import com.bloodbird.lifescheduler.Schedulers.Base;
+import com.bloodbird.lifescheduler.Views.ListAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,7 +23,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
    Button addbutton;
-     StableArrayAdapter adapter;
+
     ArrayList<String> list;
     Base base;
 
@@ -35,21 +37,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        base=Base.getInstance();
+        base = Base.getInstance();
         base.baseBuild();
 
-        addbutton=findViewById(R.id.addbutton);
+       
+
+        addbutton = findViewById(R.id.addbutton);
         addbutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               Intent intent=new Intent(MainActivity.this,AddJob.class);
-               startActivity(intent);
+                Intent intent = new Intent(MainActivity.this, AddJob.class);
+                startActivity(intent);
             }
         });
 
 
-
-        recyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler);
 
         // use this setting to improve performance if you know that changes
         // in content do not change the layout size of the RecyclerView
@@ -60,51 +63,17 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(layoutManager);
 
         // specify an adapter (see also next example)
-        mAdapter = new ListAdapter(myDataset);
+        mAdapter = new ListAdapter(base.jobs);
         recyclerView.setAdapter(mAdapter);
 
-
-
-
-
-
-
-
-
-
+      mAdapter.notifyDataSetChanged();
     }
-
-
-
-        private class StableArrayAdapter extends ArrayAdapter<String> {
-
-            HashMap<String, Integer> mIdMap = new HashMap<String, Integer>();
-
-            public StableArrayAdapter(Context context, int textViewResourceId,
-                                      List<String> objects) {
-                super(context, textViewResourceId, objects);
-                for (int i = 0; i < objects.size(); ++i) {
-                    mIdMap.put(objects.get(i), i);
-                }
-            }
-
-            @Override
-            public long getItemId(int position) {
-                String item = getItem(position);
-                return mIdMap.get(item);
-            }
-
-            @Override
-            public boolean hasStableIds() {
-                return true;
-            }
-
-        }
 
 
     @Override
     protected void onResume() {
         super.onResume();
+        mAdapter.notifyDataSetChanged();
 
     }
 }
